@@ -21,7 +21,7 @@ def results(request, question_id):
 def vote(request, question_id):
     return HttpResponse("You're voting on question %s." % question_id)
 
-from django.views.generic import CreateView, ListView, DetailView
+from django.views.generic import CreateView, ListView, DetailView, DeleteView
 from django.urls import reverse_lazy 
 
 class QuestionCreateView(CreateView):
@@ -30,10 +30,16 @@ class QuestionCreateView(CreateView):
     success_url: reverse_lazy('question-list')
     template_name = 'polls/question_form.html'
 
-class QuestionListView(ListView): 
-    model = Question
-    context_object_name = 'questions'
-
 class QuestionDetailView(DetailView):
     model = Question
     context_object_name='question'
+
+class QuestionDeleteView(DeleteView):
+    model = Question 
+    success_url = reverse_lazy("question-list") 
+
+class QuestionListView(ListView):
+    model = Question
+    context_object_name = 'questions'
+    ordering = ['-pub_date']
+    paginate_by = 5
