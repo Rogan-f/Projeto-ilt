@@ -3,6 +3,9 @@ from django.shortcuts import get_object_or_404, render
 
 from .models import Question
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 def index(request):
     latest_question_list = Question.objects.order_by("-pub_date")[:5]
@@ -43,6 +46,7 @@ class QuestionDeleteView(DeleteView):
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
         return super().form_valid(form)
+
 
 class QuestionListView(ListView):
     model = Question
