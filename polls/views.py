@@ -3,10 +3,6 @@ from django.shortcuts import get_object_or_404, render
 
 from .models import Question
 
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-
-
 def index(request):
     latest_question_list = Question.objects.order_by("-pub_date")[:5]
     context = {"latest_question_list": latest_question_list}
@@ -19,10 +15,6 @@ def detail(request, question_id):
 def results(request, question_id):
     response = "You're looking at the results of question %s."
     return HTTPResponse(response % question_id)
-
-
-def vote(request, question_id):
-    return HttpResponse("You're voting on question %s." % question_id)
 
 from django.views.generic import CreateView, ListView, DetailView, DeleteView, UpdateView
 from django.urls import reverse_lazy 

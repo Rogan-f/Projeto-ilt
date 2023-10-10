@@ -1,12 +1,17 @@
+from http.client import HTTPResponse
 from django.shortcuts import render
 
-# Create your views here.
-from django.views.generic.edit import CreateView
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+from django.views.generic.edit import CreateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.hashers import make_password 
 from django.contrib import messages
 
 from django.contrib.auth import get_user_model
+
+from polls.models import Question
 User = get_user_model() 
 
 from accounts.forms import AccountSignupForm 
@@ -24,3 +29,8 @@ class AccountCreateView(CreateView):
         messages.success(self.request, self.success_message)
         return super(AccountCreateView, self).form_valid(form)
 
+@login_required 
+def sobre(request):return HTTPResponse("Este é um app de enquete!")
+
+class QuestionDeleteView(LoginRequiredMixin, DeleteView):
+    model = Question
