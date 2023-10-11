@@ -7,3 +7,10 @@
     <button type="submit">Enviar</button>
 </form>
 {% endblock  %}
+
+{% if not user.is_authenticated %}
+    <a class="p-2 text-dark" href="{% url 'signup' %}">Cadastrar</a>
+    <a class="p-2 text-dark" href="{% url 'login' %}">Acessar</a>
+{% else %}
+    <a class="p-2 text-dark" href="{% url 'logout' %}">Sair</a>
+{% endif %}
