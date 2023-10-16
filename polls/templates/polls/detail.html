@@ -1,8 +1,9 @@
 {% extends "polls/base.html" %}
 
-{% block title %}Detalhes da Enquete{% endblock title %}
+{% block title %} Detalhes da Enquete{% endblock title %}
 
 {% block content %}
+
     <h1>{{ question.question_text }}</h1>
 
     <ul>
@@ -11,7 +12,7 @@
     {% endfor %}
     </ul>
 
-    <a href="{% url 'index' %}">Pagina inicial</a>
+    <a href="{ url 'index' %}">Página inicial</a>
 
     <form action="{% url 'polls:vote' question.id %}" method="post">
         {% csrf_token %}
@@ -25,4 +26,5 @@
         </fieldset>
         <input type="submit" value="Vote">
         </form>
-    {% endblock %}
+
+{% endblock content %}

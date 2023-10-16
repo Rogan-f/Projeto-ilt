@@ -1,16 +1,18 @@
-{% extends "polls/base.html" %}
+{% extends 'polls/base.html' %} {# herda tudo que já tem em _layout1.html #}
 
-{% block content %}
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Enviar</button>
-</form>
-{% endblock  %}
+{% block content %} {# substitui o bloco content em _layout1.html #}
 
-{% if not user.is_authenticated %}
-    <a class="p-2 text-dark" href="{% url 'signup' %}">Cadastrar</a>
-    <a class="p-2 text-dark" href="{% url 'login' %}">Acessar</a>
-{% else %}
-    <a class="p-2 text-dark" href="{% url 'logout' %}">Sair</a>
-{% endif %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title">Acessar</h5>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success">Enviar</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %} 
