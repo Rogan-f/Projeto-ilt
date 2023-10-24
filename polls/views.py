@@ -3,8 +3,9 @@ from django.http import HttpResponse
 from .models import Question, Choice
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, ListView, DetailView, DeleteView, UpdateView
+from django.views.generic import CreateView, ListView, DetailView, DeleteView, UpdateView, TemplateView
 from django.urls import reverse_lazy
+from django.contrib import messages
 
 
 def index(request):
@@ -28,7 +29,7 @@ def vote(request, question_id):
 class QuestionCreateView(CreateView):
     model = Question 
     fields = ('question_text',)
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('question-list')
     template_name = 'polls/question_form.html'
 
 class QuestionListView(ListView):
@@ -39,15 +40,13 @@ class QuestionDetailView(DetailView):
     model = Question
     context_object_name = 'question'
 
-    from django.contrib import messages
-
 class QuestionDeleteView(LoginRequiredMixin, DeleteView):
     model = Question 
     success_url = reverse_lazy("question_list")
     success_message ="Enquete excluída com sucesso!"
 
     def form_valid(self, form):
-        message.success(self.request, self.success_message)
+        messages.success(self.request, self.success_message)
         return super().form_valid(form)
 
 class QuestionUpdateView(UpdateView):
@@ -71,10 +70,10 @@ class QuestionUpdateView(UpdateView):
 
         
 class QuestionDeleteView(LoginRequiredMixin, DeleteView):
-        model = Question
-        template_name = 'polls/question_confirm_delete_form.html'
-        success_url = reverse_lazy('polls_all')
-        success_message = 'Pergunta excluída com sucesso!'
+    model = Question
+    template_name = 'polls/question_confirm_delete_form.html'
+    success_url = reverse_lazy('polls_all')
+    success_message = 'Pergunta excluída com sucesso!'
 
     def form_valid(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
@@ -94,7 +93,6 @@ class QuestionListView(ListView):
 
 class SobreTemplateView(TemplateView):
     template_name = 'polls/sobre.html'
-
 
 class ChoiceCreateView(CreateView):
     model = Choice
