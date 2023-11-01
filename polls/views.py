@@ -26,11 +26,15 @@ def results(request, question_id):
 def vote(request, question_id):
     return HttpResponse(f"Você vai votar na pergunta de número {question_id}")
 
-class QuestionCreateView(CreateView):
+class QuestionCreateView(LoginRequiredMixin, CreateView):
     model = Question 
     fields = ('question_text',)
     success_url = reverse_lazy('question-list')
     template_name = 'polls/question_form.html'
+
+    def form_valid(self,form):
+        form.instance.author =self.request.user
+        return super(QuestionCreateView, self).form_valid(form)
 
 class QuestionListView(ListView):
     model = Question
