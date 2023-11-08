@@ -85,7 +85,7 @@ class QuestionUpdateView(UpdateView):
 class QuestionDeleteView(LoginRequiredMixin, DeleteView):
     model = Question
     template_name = 'polls/question_confirm_delete_form.html'
-    success_url = reverse_lazy('polls_all')
+    success_url = reverse_lazy('question-list')
     success_message = 'Pergunta excluída com sucesso!'
 
     def form_valid(self, request, *args, **kwargs):
@@ -179,6 +179,30 @@ def vote(request, question_id):
             selected_choice.votes += 1
             selected_choice.save()
             messages.success(request, 'seu voto fi registrado com sucesso')
-            return redirect(reverse_lazy("poll_show", args=(question.id, )))
+            return redirect(reverse_lazy("poll_results", args=(question.id, )))
     context = {'question' : question}
     return render(request, 'polls/question_detail.html', context)
+
+def results(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    votes = Choice.objects.filter(question=question).aggregate(total=Sum('votes')) or 0
+    total_votes =votes.get('total')
+    context = {"question": question}
+
+    context['votes'] = []
+    for choice in question.choice_set.all():
+        percentage = 0 
+        if choice.votes > 0 and total_votes > 0:
+            percentage- choice.votes / total_votes * 100
+
+        context['votes'].apppend(
+            {
+                'text': choice.choice_text, 
+                'votes': choice.votes, 
+                'percentage': round(percentage, 2)
+            }
+        )
+
+    return render(request, "polls/results.html", context
+    
+    )
