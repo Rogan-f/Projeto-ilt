@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.db.models import Sum 
 
 
+
 def index(request):
     latest_question_list = Question.objects.order_by("-pub_date")[:5]
     context = {
@@ -67,15 +68,17 @@ class QuestionUpdateView(UpdateView):
     templates_name = 'polls/question_form.html'
     success_url = reverse_lazy('question_list')
     success_message = 'Pergunta atualizada'
-    fields = ('question-text', 'pub_date')
+    fields = ('question_text', 'pub_date',)
 
     def get_context_data(self, **kwargs):
         context = super(QuestionUpdateView, self).get_context_data(**kwargs)
         context['form_title'] = 'Editando a pergunta'
 
         question_id = self.kwargs.get('pk')
-        choices = Choice.objects.filter(question_pk=question_id)
+        choices = Choice.objects.filter(question_id=question_id)
         context['question_choices'] = choices
+
+        return context
 
     def form_valid(self, request, *args, **kwargs):
         messages.sucess(self.request, self.success_message)
@@ -131,7 +134,7 @@ class ChoiceCreateView(CreateView):
     
     def get_success_url(self, *args, **kwargs):
         question_id = self.kwargs.get('pk')
-        return reverse_lazy('poll_edit', kwargs={'pk': question_id})
+        return reverse_lazy('question-update', kwargs={'pk': question_id})
 
 
 class ChoiceUpdateView(UpdateView):
@@ -152,7 +155,7 @@ class ChoiceUpdateView(UpdateView):
 
     def get_success_url(self, *args, **kwargs):
         question_id = self.object.question.id
-        return reverse_lazy('poll_edit', kwargs={'pk': question_id})
+        return reverse_lazy('question-update', kwargs={'pk': question_id})
 
 class ChoiceDeleteView(LoginRequiredMixin, DeleteView):
     model = Choice
@@ -166,7 +169,7 @@ class ChoiceDeleteView(LoginRequiredMixin, DeleteView):
     def get_success_url(self, *args, **kwargs):
         question_id = self.object.question.id
         print(question_id)
-        return reverse_lazy('poll_edit', kwargs={'pk': question_id})
+        return reverse_lazy('question-update', kwargs={'pk': question_id})
 
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
